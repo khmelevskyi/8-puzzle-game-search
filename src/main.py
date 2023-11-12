@@ -1,6 +1,7 @@
 import time
 
 import pandas as pd
+import matplotlib.pyplot as plt 
 
 from src.puzzle import Puzzle
 from src.LDFS_search import limited_depth_first_search
@@ -8,10 +9,11 @@ from src.RBFS_search import recursive_best_first_search
 
 
 ALGOS_LIST = ["RBFS", "LDFS"]
-NUM_EXPERIMENTS = 10 # the number of experiments we take for each algorithm
-NUM_RANDOM_MOVES = 10 # the number of random moves we will make to create initial_state
-LDFS_LIMIT_DEPTH = 2 # the limit of depth for this algorithm
+NUM_EXPERIMENTS = 100 # the number of experiments we take for each algorithm
+NUM_RANDOM_MOVES = 20 # the number of random moves we will make to create initial_state
+LDFS_LIMIT_DEPTH = 12 # the limit of depth for this algorithm
 
+# limits for program execution by time and memory
 EXPER_EXECUT_LIMIT_TIME = 10 # minutes
 EXPER_EXECUT_LIMIT_MEMORY = 512 # MB
 
@@ -24,7 +26,7 @@ results_df = pd.DataFrame(
     ]
 )
 results_df = results_df.set_index(["exp_ii", "algorithm"])
-
+none_counter = {"RBFS": 0, "LDFS": 0}
 
 def repr_start_end_puzzle_states(start_state: list[int], end_state: list[int]):
     return str(start_state[0:3]) + '\t  \t' + str(end_state[0:3]) +\
@@ -43,12 +45,13 @@ def main(exp_ii: int, initial_state: list[int]):
         if ALGO == "RBFS":
             END_STATE = recursive_best_first_search(initial_state=initial_state)
         elif ALGO == "LDFS":
-            END_STATE = limited_depth_first_search(initial_state=initial_state, limit=LDFS_LIMIT_DEPTH)
+            END_STATE = limited_depth_first_search(initial_state=initial_state, depth_limit=LDFS_LIMIT_DEPTH)
 
         t1 = round(time.time() - t0, 5)
 
         # region data append
         if END_STATE is None:
+            none_counter[ALGO] += 1
             results_df.loc[(exp_ii, ALGO), :] = [
                 ''.join(map(str, initial_state)), None,
                 ''.join(map(str, Puzzle.goal_state)), t1, Puzzle.num_of_instances,
@@ -92,4 +95,12 @@ if __name__ == "__main__":
     print(f"avg_time:\n{avg_time}\n")
     print(f"avg_generated_states:\n{avg_generated_states}\n")
     print(f"avg_max_states_in_memory:\n{avg_max_states_in_memory}\n")
+    print(f"number of not found solutions: {none_counter}")
+
+    for feature in [avg_time, avg_generated_states, avg_max_states_in_memory]:
+        feature.plot(kind='bar')
+        plt.title(f'avg_{feature.name} Comparison between RBFS and LDFS')
+        plt.ylabel(f'avg_{feature.name}')
+        plt.xlabel('Algorithm')
+        plt.show()
 
