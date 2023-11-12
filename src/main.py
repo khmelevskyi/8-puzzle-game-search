@@ -2,9 +2,9 @@ import time
 
 import pandas as pd
 
-from puzzle import Puzzle
-from LDFS_search import limited_depth_first_search
-from RBFS_search import recursive_best_first_search
+from src.puzzle import Puzzle
+from src.LDFS_search import limited_depth_first_search
+from src.RBFS_search import recursive_best_first_search
 
 
 ALGOS_LIST = ["RBFS", "LDFS"]

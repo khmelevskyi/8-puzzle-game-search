@@ -1,6 +1,6 @@
 import psutil
 
-from puzzle import Puzzle
+from src.puzzle import Puzzle
 
 
 def memory_limit_exceeded(memory_limit_mb):

@@ -6,6 +6,12 @@ In this program the initial state of the game is calculated automatically by mov
 order for some amount of these moves. This way we ensure that the solution exists and this way we can approximately
 decide the depth of the search.
 
+### How to use
+To run the program:
+- clone the repo
+- setup venv with requirements
+- `python -m src.main`
+
 ### RBFS
 This is an informed search algorithm.
 For this algorithm you can choose the heuristic function. The function can be calculated either by the number of misplaced plates or by the distanced of each plate between its current state and goal state.
